@@ -1,0 +1,184 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type App {
+  logo: String
+  name: String
+  onboardingFlow: String
+  privacyPolicyUrl: String
+  termsOfServiceUrl: String
+  uiUrl: String
+  websiteUrl: String
+}
+
+type AppConfig {
+  apiUrl: String
+  businessModel: BusinessModelGraphql
+  defaultRole: String
+  emailSenderEmail: String
+  emailSenderName: String
+  id: String
+  logo: String
+  name: String
+  onboardingFlow: String
+  privacyPolicyUrl: String
+  roles: [String!]
+  stripeEnabled: Boolean
+  termsOfServiceUrl: String
+  uiUrl: String
+  websiteUrl: String
+}
+
+type BusinessModelGraphql {
+  plans: [PlanGraphql!]!
+  taxes: [TaxGraphql!]!
+}
+
+type CheckoutResponse {
+  """A checkout ID to create a `Stripe` checkout form"""
+  id: String!
+
+  """
+  Use this key to initiate a Stripe client and use the `id` property to start checkoutSession
+  """
+  publicKey: String!
+}
+
+input CreateCheckoutSessionInput {
+  """The plan the customer which to checkout"""
+  plan: String!
+
+  """
+  If there's multi region plans you need to provide the region to fetch the correct currencies and taxes
+  """
+  region: String
+}
+
+input CreateTenantInput {
+  logo: String
+  name: String
+  owner: TenantOwnerInput!
+  plan: String
+}
+
+type Mutation {
+  createCheckoutSession(args: CreateCheckoutSessionInput!): CheckoutResponse!
+  createTenantAnonymous(tenant: CreateTenantInput!): Tenant!
+
+  """This will create a new user for a tenant."""
+  createUsers(userNames: [String!]!): [User!]!
+  deleteUser(userId: String!): Boolean!
+  sendPasswordResetLink(userId: String!): Boolean!
+
+  """"""
+  updateAppCredentials(credentials: UpdateCredentialsInput!): Boolean!
+  updateTenant(tenant: TenantInput!): Tenant!
+
+  """
+  Update the user. You can change role, teams and also enable or disable the user from logging in.
+  """
+  updateUser(user: UserInput!): User!
+}
+
+type PlanGraphql {
+  name: String!
+  prices: [PriceGraphql!]!
+}
+
+type PriceGraphql {
+  amount: Float!
+  currency: String!
+  region: String!
+}
+
+type Query {
+  """Gets useful App configs for the UI to consume"""
+  getAppAnonymous: App!
+
+  """
+  A bunch of more secret properties to render for the app config screen used by developer during quickstart
+  """
+  getAppConfig: AppConfig!
+
+  """
+  Gets the apps plan. Use this to display pricing instead of the AppConfig resolver
+  """
+  getAppPlans: [PlanGraphql!]!
+
+  """
+  Obtain an short lived session url to redirect or present the user its Stripe subscription panel for updating payment or subscription data.
+  """
+  getCustomerPortal: String!
+
+  """Gets a single tenant"""
+  getTenant: Tenant!
+  getTenantAnonymous: TenantAnonymous!
+
+  """List all available user roles that the current user can assign others"""
+  listUserRoles: [String!]!
+
+  """List all users in this tenant."""
+  listUsers: [User!]!
+}
+
+type TaxGraphql {
+  name: String!
+  percentage: Float!
+  region: String!
+}
+
+type Tenant {
+  createdAt: String
+  id: String!
+  locale: String
+  logo: String!
+  mfa: Boolean
+  name: String!
+  onboarded: Boolean
+  paymentsEnabled: Boolean
+  paymentsRequired: Boolean
+  plan: String
+}
+
+type TenantAnonymous {
+  id: String!
+  locale: String
+  name: String
+}
+
+input TenantInput {
+  locale: String
+  mfa: Boolean
+  name: String
+  plan: String
+}
+
+input TenantOwnerInput {
+  email: String!
+  firstName: String
+  lastName: String
+}
+
+input UpdateCredentialsInput {
+  stripePublicKey: String
+  stripeSecretKey: String
+}
+
+type User {
+  createdAt: String
+  email: String
+  enabled: Boolean
+  fullName: String
+  id: String!
+  onboarded: Boolean
+  role: String
+  teams: [String!]
+  username: String
+}
+
+input UserInput {
+  enabled: Boolean
+  id: String!
+  role: String
+}
